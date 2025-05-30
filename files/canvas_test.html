@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Canvas Test Page</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+  body {
+    height: 100vh;
+    width: 100vw;
+    background-color: #111;
+    font-family: sans-serif;
+    color: white;
+  }
+
+  canvas {
+    border: 1pt solid white;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  #progressbarC {
+    border: 1pt solid white;
+  }
+  #progressbar {
+    background-color: white;
+    height: 1em;
+  }
+</style>
+<script>
+let counter = 0;
+const fps = 25;
+const duration = 10;
+let color_start = Math.floor(Math.random() * 64)
+function load () {
+
+}
+load();
+
+function renderCanvas() {
+  if(document.getElementById('play').checked) {
+    counter++;
+    setTimeout(renderCanvas, 100);
+  }
+
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const scale = 4.5;
+
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  context.scale(scale, scale);
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Change Canvas
+  const offset = (Math.floor(counter / fps * 64)%64);
+  let gradient = context.createLinearGradient(-color_start - offset, 0, 3*canvas.width/4.5-color_start - offset, 0);
+  
+  gradient.addColorStop(0  /14, "red");
+  gradient.addColorStop(1  /14, "yellow");
+  gradient.addColorStop(2  /14, "green");
+  gradient.addColorStop(3  /14, "blue");
+  gradient.addColorStop(4  /14, "purple");  
+  gradient.addColorStop(5  /14, "red");
+  gradient.addColorStop(6  /14, "yellow");
+  gradient.addColorStop(7  /14, "green");
+  gradient.addColorStop(8  /14, "blue");
+  gradient.addColorStop(9  /14, "purple");
+  gradient.addColorStop(10 /14, "red");
+  gradient.addColorStop(11 /14, "yellow");
+  gradient.addColorStop(12 /14, "green");
+  gradient.addColorStop(13 /14, "blue");
+  gradient.addColorStop(14 /14, "purple");
+  
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Change progress bar
+  document.getElementById('step').innerText = counter;
+  document.getElementById('stepof').innerText = fps * duration;
+  document.getElementById('sec').innerText = counter / fps;
+  document.getElementById('secof').innerText = duration;
+  document.getElementById('progressbar').style.width = `${counter*100 / (fps*duration)}%`;
+}
+</script>
+<body onload="renderCanvas()">
+<div style="display:flex;justify-content:center;align-items:center; margin-top: 10em;">
+  <div> 
+    <h1>Preview</h1>
+    <canvas id="canvas" style="width: 640px; height: 320px;"></canvas>
+    <div>
+      <div>Step <span id="step"></span> of <span id="stepof"></span> | Second <span id="sec"></span> of <span id="secof"></span></div>
+      <div id="progressbarC">
+        <div id="progressbar"></div>
+      </div>
+
+      <div>
+        <button onclick="counter++; renderCanvas()">Next</button>
+        <input type="checkbox" id="play">Play</input>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html> 
