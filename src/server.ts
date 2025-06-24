@@ -1,16 +1,27 @@
 import express, { Request, Response } from 'express';
-import { Canvas, createCanvas, loadImage } from 'canvas';
 
 import { fifo } from './fifo'
 import { Renderer } from './renderer'
 import { ClockRenderer } from './renderers/clock';
 import { GradientRenderer } from './renderers/gradient';
+import { TestRenderer } from './renderers/test';
 
 const app = express();
 const port = 3000;
 
-app.get('/image', (req: Request, res: Response) => {
-  fifo.shift().createPNGStream().pipe(res);
+app.get('/image', async (req: Request, res: Response) => {
+  console.log('.');
+
+  const pixels = fifo.shift();
+
+  // Convert Uint16Array to a Buffer
+  const buffer = Buffer.from(pixels.buffer);
+  // Set headers
+  res.set({
+      'Content-Type': 'application/octet-stream',
+      'Content-Length': buffer.length,
+  });
+  res.send(buffer);
 
   prepareRenderer();
 });
@@ -39,8 +50,9 @@ app.listen(port, () => {
 
 let rendererCounter: number = 0;
 let rendererIndex: number = 0;
-//const renderers: Renderer [] = [new ClockRenderer ()];
-const renderers: Renderer [] = [new GradientRenderer ()];
+//const renderers: Renderer [] = [new ClockRenderer (), new GradientRenderer ()];
+const renderers: Renderer [] = [new TestRenderer ()];
+
 async function prepareRenderer (): Promise<undefined> {
   if(fifo.length > 30) {// 30*40ms => 1,2 sec to render new images
     return 

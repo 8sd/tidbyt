@@ -1,17 +1,19 @@
-import { Canvas, createCanvas } from 'canvas';
+/**
+ * This class defines a simple types fifo
+ */
 
 class Fifo {
-  fifo: Canvas[] = [];
+  fifo: Uint16Array[] = [];
 
-  push (c: Canvas): void {
-    this.fifo.push(c)
+  push (pixels: Uint16Array): void {
+    this.fifo.push(pixels)
   }
 
-  shift (): Canvas {
+  shift (): Uint16Array {
     if (this.fifo.length > 1) {
-      let c = this.fifo.shift();
-      if (c)
-        return c;
+      let pixels = this.fifo.shift();
+      if (pixels)
+        return pixels;
     } 
     return this.fifo[0];
   }

@@ -53,6 +53,6 @@ export class GradientRenderer extends Renderer{
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    fifo.push(canvas);
+    this.convert2rgb16(canvas);
   }
 }

@@ -67,6 +67,7 @@ export class ClockRenderer extends Renderer{
   // Fade out
   if (this.counter > this.duration*this.fps-32)
     context.fillRect(0, 0, 64, this.counter-this.duration*this.fps+32);
-  fifo.push(canvas);
+  
+  this.convert2rgb16(canvas);
   };
 }

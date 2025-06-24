@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Canvas Test Page</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+  body {
+    height: 100vh;
+    width: 100vw;
+    background-color: #111;
+    font-family: sans-serif;
+    color: white;
+  }
+
+  canvas {
+    border: 1pt solid white;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  #progressbarC {
+    border: 1pt solid white;
+  }
+  #progressbar {
+    background-color: white;
+    height: 1em;
+  }
+</style>
+<script>
+let counter = 0;
+const fps = 25;
+const duration = 10;
+let hour;
+let minute;
+function load () {
+  date = new Date();
+  hour = `${date.getHours()}`;
+  minute = `${date.getMinutes()}`;
+}
+load();
+
+let dotVisible = false;
+function renderCanvas() {
+  if(document.getElementById('play').checked) {
+    counter++;
+    setTimeout(renderCanvas, 100);
+  }
+
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  const scale = 4.5;
+
+  context.setTransform(1, 0, 0, 1, 0, 0);
+  context.scale(scale, scale);
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  context.font = "32px Arial";
+  context.fillStyle = 'green';
+  context.textBaseline = "bottom"; 
+  context.textAlign = "center"; 
+
+  // Change Canvas
+
+  // tooggle dot
+  if (counter % fps == 0) {
+    dotVisible = !dotVisible;
+  }
+  if (dotVisible) {
+    context.fillText(`${hour}:${minute}`, 33, 32, 64);
+  } else {
+    context.fillText(`${hour} ${minute}`, 33, 32, 64);
+  }
+
+  context.fillStyle = 'black';
+  // Fade in
+  if (counter < 32)
+    context.fillRect(0, 0, 64, 32-counter);
+  // Fade out
+  if (counter > duration*fps-32)
+    context.fillRect(0, 0, 64, counter-duration*fps+32);
+
+  // Change progress bar
+  document.getElementById('step').innerText = counter;
+  document.getElementById('stepof').innerText = fps * duration;
+  document.getElementById('sec').innerText = counter / fps;
+  document.getElementById('secof').innerText = duration;
+  document.getElementById('progressbar').style.width = `${counter*100 / (fps*duration)}%`;
+}
+</script>
+<body onload="renderCanvas()">
+<div style="display:flex;justify-content:center;align-items:center; margin-top: 10em;">
+  <div> 
+    <h1>Preview</h1>
+    <canvas id="canvas" style="width: 640px; height: 320px;"></canvas>
+    <div>
+      <div>Step <span id="step"></span> of <span id="stepof"></span> | Second <span id="sec"></span> of <span id="secof"></span></div>
+      <div id="progressbarC">
+        <div id="progressbar"></div>
+      </div>
+
+      <div>
+        <button onclick="counter++; renderCanvas()">Next</button>
+        <input type="checkbox" id="play">Play</input>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html> 
